@@ -70,14 +70,23 @@
     </div>
      <hr />
     <div class="home">
-      <img src="/static/images/home.png" />
+      <img src="/static/images/home.png" @click="navToHome"/>
     </div>
     
   </div>
 </template>
 
 <script>
-export default {};
+export default {
+  methods:{
+    //点击主页返回
+    navToHome(){
+      wx.navigateTo({
+        url:'/pages/index/main'
+      })
+    }
+  }
+};
 </script>
 
 <style>

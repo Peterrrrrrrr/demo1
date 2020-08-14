@@ -1,6 +1,7 @@
 <template>
   <div>
-    <div>
+    <div :class="{'unclear':isTrue}"
+         :style="{height:screenHeight}">
       <div class="navBar" :style="{height:navHeight}">
         <img
           :style="{height:imgHeight,width:imgHeight,top:imgtop,left:imgleft}"
@@ -16,53 +17,45 @@
           scale="14"
           subkey="EFSBZ-NMA6D-MFH45-HZFGT-I5ATO-IWFP4"
           show-location
+          @markertap="markertap"
         ></map>
         <div class="write">
-          <img src="/static/images/pen.png" />
+          <img src="/static/images/pen.png" @click="btnShare"/>
         </div>
-        <div class="locationBtn" @click="showText">
+        <div class="locationBtn">
           <img src="/static/images/location.png" />
         </div>
       </div>
     </div>
     <!-- 弹出文本信息 -->
-    <div class="banner" v-if="showCover" catchtap="closeText">
-      <div class="userNote" ref="msk">
-        <div class="userBar">
-          <img src="/static/images/pig.jpg" />
-        </div>
-        <div class="content">
-          <div class="textArea">
-            <div>
-              “熄灭第七根烟，现在凌晨三点半
-              ,他早习惯加班，融入夜晚
-              ,最初懵懂少年渴望大厦的阑珊
-              ,比星光耀眼”
-            </div>
-          </div>
-          <div class="timeArea">
-            <span class="date">2013年5月17日 01：28</span>
-            <span class="close" @click="closeText">关闭</span>
-          </div>
-        </div>
-      </div>
+    <div class="noteToggle">
+      <note ref="note" @noteToggle="watchShare"></note>
     </div>
-    <!-- 遮罩层 -->
-    <div class="cover" v-if="showCover"></div>
+    <!-- 发布页面 -->
+    <div class="boxToggle">
+      <share ref="share" @boxToggle="watchShare"></share>
+    </div>
   </div>
 </template>
 
 <script>
+import share from '@/components/share'
+import note from '@/components/note'
 export default {
+  components:{
+    share,
+    note
+  },
   data() {
     return {
+      screenHeight:0,
+      isTrue:false,
       navHeight: 0,
       imgHeight: 0,
       imgtop: 0,
       imgleft: 0,
       longitude: "",
       latitude: "",
-      showCover:false,
       markers: [
         {
           iconPath: "/static/images/idea.png",
@@ -80,7 +73,8 @@ export default {
           width: 30,
           height: 30
         }
-      ]
+      ],
+      
     };
   },
   methods: {
@@ -91,6 +85,7 @@ export default {
       const menuButtonInfo = wx.getMenuButtonBoundingClientRect();
       //获取用户手机信息
       const systemInfo = wx.getSystemInfoSync();
+      that.screenHeight=systemInfo.screenHeight+"px";
       that.navHeight =
         (menuButtonInfo.top - systemInfo.statusBarHeight) * 2 +
         menuButtonInfo.height +
@@ -120,15 +115,22 @@ export default {
         }
       });
     },
-    //弹出文本框
-    showText(){
-      this.showCover = true
+    //点击用户小图标打开文本窗口
+    markertap() {
+        this.$refs.note.showText()
+        this.isTrue = true
+      },
+    //点击pen显示分享页面
+    btnShare(){
+      this.$refs.share.showBox(),
+      this.isTrue = true
     },
-    //点击关闭弹出框
-    closeText(e){
-      console.log(111);
-      console.log(e.currentTarget.dataset.id);
-    },
+    //监听子组件属性
+    watchShare(toggle){
+      if(toggle == false){
+        this.isTrue = false
+      }
+    }
   },
   created() {
     this.currentLocation();
@@ -156,6 +158,7 @@ export default {
   display: flex;
   flex-direction: row;
   justify-content: center;
+  z-index: 1;
 }
 .write {
   width: 65px;
@@ -204,70 +207,8 @@ export default {
   position: fixed;
   height: 100%;
 }
-.banner {
-  top: 0;
+.unclear{
   width: 100%;
-  position: fixed;
-  height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 3;
-}
-.cover {
-  position: fixed;
-  left: 0px;
-  top: 0px;
-  width: 100%;
-  height: 100%;
-  background-color: #bdbaba;
-  opacity: 0.5;
-  z-index: 2;
-}
-.userNote {
-  position: absolute;
-  z-index: 3;
-  width: 70%;
-  background-color: #ffffff;
-  border-radius: 10px;
-}
-.userBar {
-  width: 100%;
-  height: 60px;
-  background-color: #ffffff;
-  border-radius: 10px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-.userBar img {
-  width: 35px;
-  height: 35px;
-  border-radius: 50%;
-  margin: auto;
-}
-.content {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-}
-.textArea {
-  font-size: 15px;
-  width: 90%;
-}
-.timeArea {
-  width: 90%;
-  font-size: 10px;
-  margin-top: 10px;
-  margin-bottom: 10px;
-}
-.date {
-  color: #888888;
-  margin-left: 5px;
-}
-.close {
-  margin-left: 5px;
+  filter: blur(3px);
 }
 </style>

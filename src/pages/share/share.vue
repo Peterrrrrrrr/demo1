@@ -1,101 +1,94 @@
 <template>
-  <div>
-    <div class="banner">
-      <div class="userNote">
-        <div class="userBar">
-          <img src="/static/images/pig.jpg" />
-        </div>
-        <div class="content">
-          <div class="textArea">
-            <div>
-              “熄灭第七根烟，现在凌晨三点半
-              ,他早习惯加班，融入夜晚
-              ,最初懵懂少年渴望大厦的阑珊
-              ,比星光耀眼”
-            </div>
-          </div>
-          <div class="timeArea">
-            <span class="date">2013年5月17日 01：28</span>
-            <span class="close">关闭</span>
-          </div>
-        </div>
+<div class="test">
+  <div class="shareBox">
+    <div class="shareContainer">
+      <div class="text">
+        <textarea name="" id="" cols="30" rows="10"></textarea>
+      </div>
+      <div class="shareBtn">
+        <p>发布</p>
       </div>
     </div>
-    <div class="cover"></div>
+    <div class="shareCancel">
+      <img src="/static/images/cancel.png"/>
+    </div>
   </div>
+</div>
+  
 </template>
 
 <script>
-export default {};
+export default {
+  data(){
+    return{
+      
+    }
+  },
+  methods:{
+    
+  }
+}
 </script>
 
 <style>
-.banner {
+.test{
+  top: 0;
   width: 100%;
   position: fixed;
   height: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 1;
+  background:#bdbaba;
 }
-.cover {
-  position: fixed;
-  left: 0px;
-  top: 0px;
-  background: rgba(0, 0, 0, 0.4);
-  width: 100%; 
-  height: 100%;
-  filter: alpha(opacity=60); /*设置透明度为60%*/
-  opacity: 0.6; /*非IE浏览器下设置透明度为60%*/
-  /* display: none; */
-  z-index: 2;
+.shareBox {
+  width: 85%;
+  height: 500px;
+  position: relative;
+  display: flex;
+  justify-content: center;
 }
-.userNote {
+.shareContainer{
   position: absolute;
-  z-index: 1000;
-  width: 70%;
-  background-color: #ffffff;
-  border-radius: 10px;
-}
-
-.userBar {
   width: 100%;
-  height: 60px;
+  height: 400px;
   background-color: #ffffff;
-  border-radius: 10px;
+  border-radius: 15px;
   display: flex;
   justify-content: center;
-  align-items: center;
 }
-.userBar img {
-  width: 35px;
+.shareContainer .text{
+  position: absolute;
+  top: 10px;
+  width: 90%;
+  height: 300px;
+  background-color: #f7f7f7;
+  border-radius: 5px;
+}
+.shareContainer .shareBtn{
+  bottom: 20px;
+  position: absolute;
+  width:40%;
   height: 35px;
-  border-radius: 50%;
-  margin: auto;
+  border-radius: 999px;
+  background-color:#18c3aa;
+  text-align: center;
 }
-.content {
+.shareContainer .shareBtn p{
+  line-height: 35px;
+  color:#ffffff
+}
+.shareCancel{
+  bottom: 0px;
+  display: block;
+  position: absolute;
   width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+  height: 45px;
 }
-.textArea {
-  font-size: 15px;
-  width: 90%;
-}
-.timeArea {
-  width: 90%;
-  font-size: 10px;
-  margin-top: 10px;
-  margin-bottom: 10px;
-}
-.date {
-  color: #888888;
-  margin-left: 5px;
-}
-.close {
-  margin-left: 5px;
+.shareCancel img{
+  display: block;
+  width: 45px;
+  height: 45px;
+  margin: auto;
 }
 </style>
