@@ -4,7 +4,7 @@
         <img :src="oneUserInfo[0].Avatar" />
     </div>
     <div class="container">
-        <div class="content" v-for="item in oneUserInfo" :key="item">
+        <div class="content" v-for="(item,index) in oneUserInfo" :key="index">
             <div class="textArea">
                 <p>{{item.content}}</p>
             </div>

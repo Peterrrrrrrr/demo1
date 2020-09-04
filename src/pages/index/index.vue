@@ -2,7 +2,7 @@
 <div>
     <div :class="{'unclear':isTrue}" :style="{height:screenHeight}">
         <div class="navBar" :style="{height:navHeight}">
-            <img :style="{height:imgHeight,width:imgHeight,top:imgtop,left:imgleft}" :src="Avatar" />
+            <img :style="{height:imgHeight,width:imgHeight,top:imgtop,left:imgleft}" :src="Avatar" @click="toMe"/>
         </div>
         <div class="container">
             <map class="map" :longitude="longitude" :latitude="latitude" :markers="markers" scale="14" subkey="EFSBZ-NMA6D-MFH45-HZFGT-I5ATO-IWFP4" show-location @markertap="markertap"></map>
@@ -10,7 +10,7 @@
                 <img src="/static/images/pen.png" @click="login" />
             </div>
             <div class="locationBtn">
-                <img src="/static/images/location.png" />
+                <img src="/static/images/location.png" @click="moveToMe"/>
             </div>
         </div>
     </div>
@@ -93,6 +93,12 @@ export default {
                 }
             });
         },
+        //定位至当前位置
+        moveToMe(){
+            console.log(11);
+            const that = this;
+            that.currentLocation()
+        },
         //点击用户小图标打开文本窗口
         markertap(e) {
             let id = e.mp.markerId;
@@ -112,26 +118,29 @@ export default {
         },
         //登录方法
         login() {
+            const that = this;
             const ui = wx.getStorageSync('ui');
             if (!ui.openId) {
+                let height = that.screenHeight;
                 wx.navigateTo({
-                    url: '/pages/getlogin/main'
+                    url: '/pages/getlogin/main?height='+height
                 })
             } else {
                 this.btnShare()
             }
         },
-        //获取用户信息
+        //获取缓存用户信息
         getUserInfo() {
             const ui = wx.getStorageSync('ui');
             if (ui.openId) {
                 this.Avatar = ui.avatarUrl
             } else {
-                this.Avatar = "/static/images/pig.jpg"
+                this.Avatar = "/static/images/user.png"
             }
         },
         //请求数据库获取所有用户内容
         gotAllUser() {
+            console.log("被调用");
             const that = this;
             wx.cloud.callFunction({
                     name: 'getalluserinfo'
@@ -162,7 +171,12 @@ export default {
             }
             this.markers = allUserMarkers;
         },
-       
+        //跳转到我的页面
+        toMe(){
+            wx.navigateTo({
+                url: '/pages/me/main'
+            })
+        }
     },
     created() {
         this.currentLocation();

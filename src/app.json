@@ -1,8 +1,8 @@
 {
   "pages": [
     "pages/index/main",
-    "pages/other/main",
     "pages/getlogin/main",
+    "pages/other/main",
     "pages/me/main"
   ],
   "window": {

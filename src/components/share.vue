@@ -72,6 +72,11 @@ export default {
                 })
                 .then(res => {
                     console.log('写入数据库成功');
+                    this.$parent.gotAllUser();
+                    wx.showToast({
+                            title: '已发布',
+                            icon: 'success',
+                        })
                     that.btnClose()
                 })
                 .catch(err => {

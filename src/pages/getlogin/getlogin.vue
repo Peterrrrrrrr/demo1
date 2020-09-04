@@ -1,14 +1,20 @@
 <template>
-  <div>
-      test
-      <p>***</p>
-    <p>***</p>
-    <p>***</p>
-    <p>***</p>
-    <p>***</p>
-    <p>***</p>
-    <p>***</p>
-    <button open-type="getUserInfo" lang="zh_CN" @getuserinfo="onGotUserInfo">授权登录</button>
+  <div class="container" :style="{height:screenHeight}">
+    <div>
+      <div class="text">
+        <p>这大城里</p>
+        <p>小小的你</p>
+        <p>...</p>
+      </div>
+      <div>
+        <button
+          type="primary"
+          open-type="getUserInfo"
+          lang="zh_CN"
+          @getuserinfo="onGotUserInfo"
+        >授权登录</button>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -19,6 +25,7 @@ export default {
             content: "",
             userInfo: {},
             openId: '',
+            screenHeight: 0
         }
     },
     methods: {
@@ -34,18 +41,40 @@ export default {
                     that.userInfo = e.target.userInfo;
                     that.userInfo.openId = that.openId;
                     wx.setStorageSync('ui', that.userInfo);
-                    wx.navigateBack({
-                        delta: 1
-                    })
+                    wx.showToast({
+                            title: '登录成功',
+                            icon: 'success',
+                        })
+                        .then(res => {
+                            setTimeout(() => {
+                            wx.navigateBack({
+                                delta: 1
+                            })  
+                            }, 500);
+                        });
+
                 })
                 .catch(err => {
                     console.log('无法获取用户信息', err);
                 })
         },
+    },
+    onLoad(options) {
+        const that = this;
+        that.screenHeight = options.height
     }
 }
 </script>
 
 <style>
+.container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 
+.text {
+  margin-bottom: 10px;
+}
 </style>
