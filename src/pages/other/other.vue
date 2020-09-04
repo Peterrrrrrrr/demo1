@@ -1,16 +1,16 @@
 <template>
 <div>
     <div class="userBar">
-        <img src="/static/images/pig.jpg" />
+        <img :src="oneUserInfo[0].Avatar" />
     </div>
     <div class="container">
-        <div class="content" v-for="item in oneUserInfo" :key="item.id">
+        <div class="content" v-for="item in oneUserInfo" :key="item">
             <div class="textArea">
                 <p>{{item.content}}</p>
             </div>
             <div class="timeArea">
-                <span class="date">2013年5月17日 01：28</span>
-                <span class="delete">删除</span>
+                <span class="date">{{item.date}}</span>
+                <!-- <span class="delete">删除</span> -->
             </div>
         </div>
     </div>
@@ -25,7 +25,8 @@
 export default {
     data() {
         return {
-            oneUserInfo: {}
+            oneUserInfo: {},
+            openId:''
         }
     },
     methods: {
@@ -36,16 +37,16 @@ export default {
             })
         },
         //获取用户信息
-        getData() {
+        gotOnelUser() {
             const that = this;
             wx.cloud.callFunction({
-                    name: 'getuserinfo',
+                    name: 'getoneuserinfo',
                     data: {
-                        userId: "oG5ub5UWtnGNwZeKtf14hJ9bq7NA"
+                        userId: that.openId
                     }
                 })
                 .then(res => {
-                    console.log('请求数据库获取单个用户内容', res);
+                    // console.log('请求数据库获取单个用户内容', res);
                     that.oneUserInfo = res.result.data
                 })
                 .catch(err => {
@@ -53,9 +54,13 @@ export default {
                 })
         }
     },
-    created(){
-    //   this.getData();
-    }
+    onLoad(options){
+        const that = this;
+        that.openId = options.openid;
+        if(that.openId){
+            that.gotOnelUser();
+        }
+    },
 };
 </script>
 

@@ -2,14 +2,10 @@
   <div v-if="toggleShare">
     <div class="box" @click="closeText($event)" id="boxId">
       <div class="shareBox" id="shareId">
-        <div class="shareContainer">
-          <div class="text">
-            <textarea name id cols="30" rows="10"></textarea>
-          </div>
-          <div class="shareBtn">
-            <p>发布</p>
-          </div>
-        </div>
+        <form class="shareContainer" @submit="addData">
+          <textarea placeholder="form 中的 textarea" name="textarea" />
+          <button form-type="submit">发布</button>
+        </form>
         <div class="shareCancel">
           <img src="/static/images/cancel.png" @click="btnClose" />
         </div>
@@ -22,34 +18,94 @@
 
 <script>
 export default {
-  data(){
-    return{
-      toggleShare:false
-    }
-  },
-  methods:{
-    //点击pen弹出分享框
-    showBox(){
-        this.toggleShare = true
+    data() {
+        return {
+            toggleShare: false,
+            userInfo:{},
+            writeLocation:{},
+            time:'',
+        }
     },
-    //点击遮罩关闭弹出框
-    closeText(e){
-      if(e.target.id === "shareId"||e.target.id === "boxId"){
-        this.toggleShare = false;
-        this.toFather()
-      }
+    methods: {
+        //点击pen弹出分享框
+        showBox() {
+            this.toggleShare = true
+        },
+        //点击遮罩关闭弹出框
+        closeText(e) {
+            if (e.target.id === "shareId" || e.target.id === "boxId") {
+                this.btnClose()
+            }
+        },
+        //点击按钮关闭弹出框
+        btnClose() {
+            this.toggleShare = false;
+            this.toFather()
+        },
+        //向父组件传值
+        toFather() {
+            let toggle = this.toggleShare;
+            this.$emit('boxToggle', toggle)
+        },
+        //写入方法
+        addData(e) {
+            //获取textarea内容
+            this.content = e.target.value.textarea
+            //获取位置信息+写入数据库
+            this.getLocation()
+        },
+        //写入数据库方法
+        setData() {
+            const that = this
+            that.timeformat();
+            wx.cloud.callFunction({
+                    name: 'adddata',
+                    data: {
+                        userId: that.userInfo.openId,
+                        name: that.userInfo.nickName,
+                        Avatar: that.userInfo.avatarUrl,
+                        content: that.content,
+                        latitude: that.writeLocation.latitude,
+                        longitude: that.writeLocation.longitude,
+                        time:that.time,
+                    }
+                })
+                .then(res => {
+                    console.log('写入数据库成功');
+                    that.btnClose()
+                })
+                .catch(err => {
+                    console.log('写入数据库失败', err);
+                })
+        },
+        //获取用户位置
+        getLocation() {
+            const that = this;
+            wx.getLocation({
+                    type: 'wgs84',
+                })
+                .then(res => {
+                    that.writeLocation = res;
+                    that.getUserInfo();
+                    that.setData();
+                })
+                .catch(err => {
+                    console.log("获取位置信息失败", err);
+                })
+        },
+        //从缓存中读取用户信息
+        getUserInfo(){
+          const ui = wx.getStorageSync('ui')
+          this.userInfo = ui
+        },
+         //时间格式化
+        timeformat(){
+            const that = this
+            var util = require('../utils/index.js');
+            that.time = util.formatTime(new Date());
+        }
     },
-    //点击按钮关闭弹出框
-    btnClose(){
-      this.toggleShare = false;
-      this.toFather()
-    },
-    //向父组件传值
-    toFather(){
-      let toggle = this.toggleShare;
-      this.$emit('boxToggle',toggle) 
-    }
-  },
+    
 }
 </script>
 
@@ -64,44 +120,48 @@ export default {
   align-items: center;
   z-index: 3;
 }
+
 .shareBox {
   width: 85%;
   height: 500px;
   position: relative;
   display: flex;
-  justify-content: center;
+  /* justify-content: center; */
 }
+
 .shareContainer {
   position: absolute;
   width: 100%;
   height: 400px;
   background-color: #ffffff;
   border-radius: 15px;
+  z-index: 10;
   display: flex;
   justify-content: center;
-  z-index: 10;
 }
-.shareContainer .text {
-  position: absolute;
+
+.shareContainer textarea {
   top: 10px;
-  width: 90%;
   height: 300px;
   background-color: #f7f7f7;
   border-radius: 5px;
 }
-.shareContainer .shareBtn {
-  bottom: 20px;
-  position: absolute;
-  width: 40%;
-  height: 35px;
-  border-radius: 999px;
+
+.shareContainer button {
+  margin-top: 30px;
+  width: 50%;
+  display: block;
+  border-radius: 20px;
   background-color: #18c3aa;
+  color: #ffffff;
   text-align: center;
 }
-.shareContainer .shareBtn p {
+
+.shareContainer .shareBtn button {
   line-height: 35px;
   color: #ffffff;
 }
+
 .shareCancel {
   bottom: 0px;
   display: block;
@@ -109,12 +169,14 @@ export default {
   width: 100%;
   height: 45px;
 }
+
 .shareCancel img {
   display: block;
   width: 45px;
   height: 45px;
   margin: auto;
 }
+
 .cover {
   position: fixed;
   left: 0px;

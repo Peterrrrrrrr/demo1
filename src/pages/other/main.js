@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import App from './share'
+import App from './other'
 
 const app = new Vue(App)
 app.$mount()
