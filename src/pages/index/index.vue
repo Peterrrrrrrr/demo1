@@ -83,7 +83,6 @@ export default {
                     const maplongitude = res.longitude;
                     that.latitude = maplatitude;
                     that.longitude = maplongitude;
-                    console.log(res);
                 },
                 fail(res) {
                     wx.showToast({
@@ -95,7 +94,6 @@ export default {
         },
         //定位至当前位置
         moveToMe(){
-            console.log(11);
             const that = this;
             that.currentLocation()
         },
@@ -140,14 +138,12 @@ export default {
         },
         //请求数据库获取所有用户内容
         gotAllUser() {
-            console.log("被调用");
             const that = this;
             wx.cloud.callFunction({
                     name: 'getalluserinfo'
                 })
                 .then(res => {
                     that.allUserInfo = res.result.data;
-                    // console.log(that.allUserInfo);
                     that.setMarkers();
                 })
                 .catch(err => {
@@ -178,14 +174,17 @@ export default {
             })
         }
     },
+    
     created() {
         this.currentLocation();
         this.getProfile();
         this.getUserInfo();
         this.gotAllUser();
     },
-    onShow() {
-        this.getUserInfo();
+    onShow(options) {
+        if(options){
+            this.Avatar = options.Avatar;
+        }
     }
 
 }

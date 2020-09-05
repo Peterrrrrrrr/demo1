@@ -1,21 +1,16 @@
 <template>
-  <div class="container" :style="{height:screenHeight}">
+<div class="container" :style="{height:screenHeight}">
     <div>
-      <div class="text">
-        <p>这大城里</p>
-        <p>小小的你</p>
-        <p>...</p>
-      </div>
-      <div>
-        <button
-          type="primary"
-          open-type="getUserInfo"
-          lang="zh_CN"
-          @getuserinfo="onGotUserInfo"
-        >授权登录</button>
-      </div>
+        <div class="text">
+            <p>" 哪有你</p>
+            <p>&nbsp;&nbsp;这样你</p>
+            <p>&nbsp;&nbsp;... ”</p>
+        </div>
+        <div>
+            <button type="primary" open-type="getUserInfo" lang="zh_CN" @getuserinfo="onGotUserInfo">授权登录</button>
+        </div>
     </div>
-  </div>
+</div>
 </template>
 
 <script>
@@ -25,7 +20,8 @@ export default {
             content: "",
             userInfo: {},
             openId: '',
-            screenHeight: 0
+            screenHeight: 0,
+            Avatar:''
         }
     },
     methods: {
@@ -36,9 +32,9 @@ export default {
                     name: 'getopenid'
                 })
                 .then(res => {
-                    console.log('e', e);
                     that.openId = res.result.openid;
                     that.userInfo = e.target.userInfo;
+                    that.Avatar = that.userInfo.avatarUrl;
                     that.userInfo.openId = that.openId;
                     wx.setStorageSync('ui', that.userInfo);
                     wx.showToast({
@@ -47,9 +43,9 @@ export default {
                         })
                         .then(res => {
                             setTimeout(() => {
-                            wx.navigateBack({
-                                delta: 1
-                            })  
+                                wx.navigateTo({
+                                    url: '/pages/index/main?avatar=' + that.Avatar
+                                })
                             }, 500);
                         });
 
@@ -76,5 +72,7 @@ export default {
 
 .text {
   margin-bottom: 10px;
+  font-size: 20px;
+  font-family: "宋体";
 }
 </style>

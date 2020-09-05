@@ -10,7 +10,6 @@
             </div>
             <div class="timeArea">
                 <span class="date">{{item.date}}</span>
-                <!-- <span class="delete">删除</span> -->
             </div>
         </div>
     </div>
@@ -26,7 +25,8 @@ export default {
     data() {
         return {
             oneUserInfo: {},
-            openId:''
+            openId:'',
+            Avatar:''
         }
     },
     methods: {

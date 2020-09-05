@@ -35,7 +35,6 @@ export default {
     methods: {
         //弹出文本框
         showText(id) {
-            console.log("id", id);
             const that = this;
             const db = wx.cloud.database()
             db.collection('demo1').where({
@@ -69,6 +68,7 @@ export default {
         toFather() {
             let toggle = this.showBox;
             this.$emit('noteToggle', toggle)
+            this.oneUser = {}
         },
 
     },

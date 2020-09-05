@@ -6,7 +6,12 @@
     "pages/me/main"
   ],
   "window": {
-    "navigationBarTextStyle":"black",
-    "navigationStyle":"custom"
+    "navigationBarTextStyle": "black",
+    "navigationStyle": "custom"
+  },
+  "permission": {
+    "scope.userLocation": {
+    "desc": "是否允许"
+    }
   }
 }

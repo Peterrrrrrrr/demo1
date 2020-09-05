@@ -3,7 +3,7 @@
     <div class="box" @click="closeText($event)" id="boxId">
       <div class="shareBox" id="shareId">
         <form class="shareContainer" @submit="addData">
-          <textarea placeholder="form 中的 textarea" name="textarea" />
+          <textarea placeholder="此时此刻..." name="textarea" />
           <button form-type="submit">发布</button>
         </form>
         <div class="shareCancel">

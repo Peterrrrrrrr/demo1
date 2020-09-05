@@ -6,11 +6,11 @@
     <div class="container">
       <div class="content" v-for="(item,index) in oneUserInfo" :key="index">
         <div class="textArea">
-          <p >{{item.content}}</p>
+          <p>{{item.content}}</p>
         </div>
         <div class="timeArea">
           <span class="date">{{item.date}}</span>
-          <span class="delete" :id="item._id" @click="removeData" >删除</span>
+          <span class="delete" :id="item._id" @click="removeData">删除</span>
         </div>
       </div>
     </div>
@@ -26,14 +26,14 @@ export default {
     data() {
         return {
             oneUserInfo: {},
-            avatar:''
+            avatar: ''
         }
     },
     methods: {
         //点击主页返回
         navToHome() {
-            wx.navigateTo({
-                url: '/pages/index/main'
+            wx.navigateBack({
+                delta: 1
             })
         },
         //获取用户信息
@@ -46,7 +46,6 @@ export default {
                     }
                 })
                 .then(res => {
-                    console.log('请求数据库获取单个用户内容', res);
                     that.oneUserInfo = res.result.data
                 })
                 .catch(err => {
@@ -59,13 +58,11 @@ export default {
             const ui = wx.getStorageSync('ui');
             that.avatar = ui.avatarUrl;
             that.openId = ui.openId;
-            console.log(that.openId);
             that.getData();
         },
         //删除语句
         removeData(e) {
             const that = this;
-            console.log(e.target.id);
             wx.cloud.callFunction({
                     name: 'removedata',
                     data: {
@@ -74,6 +71,10 @@ export default {
                 })
                 .then(res => {
                     console.log('删除成功');
+                    wx.showToast({
+                            title: '已删除',
+                            icon: 'success',
+                        })
                     that.getData();
                 })
                 .catch(err => {
@@ -82,7 +83,6 @@ export default {
         }
     },
     onLoad() {
-        //   this.getData();
         this.getOpenId();
     }
 };
